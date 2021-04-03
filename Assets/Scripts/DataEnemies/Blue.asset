@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1806b9660e9de4887f202692c8de44, type: 3}
   m_Name: Blue
   m_EditorClassIdentifier: 
-  velocity: 2
+  velocityMax: 5
+  velocityInital: 0.2

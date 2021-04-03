@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/EnemyModel", order = 1)]
 public class EnemyModel : ScriptableObject
 {
-    public float velocity;
+    public float velocityMax;
 }

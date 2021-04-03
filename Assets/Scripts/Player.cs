@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float velocity = 5; // Velocidade que irá ser para mover o jogador
-
+    public float velocity; // Velocidade que irá ser para mover o jogador
+    public GameManager gameManager;
     private Vector3 direction; //para saber qual direção o jogador quer se mvoer
     private Rigidbody rigidBody;
     [SerializeField] private float horizontal;
@@ -18,12 +18,16 @@ public class Player : MonoBehaviour
             velocity = 5;
         }
 
+        if(gameManager == null)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
+
         rigidBody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
-
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");      
         direction = new Vector3(horizontal, 0, vertical);
@@ -35,5 +39,14 @@ public class Player : MonoBehaviour
     {
         rigidBody.velocity = (moveDirection * velocity);
     }
-  
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag.Equals("coin"))
+        {
+            gameManager.UpdateCoin();
+            Destroy(other.gameObject);
+        }
+    }
+
 }
