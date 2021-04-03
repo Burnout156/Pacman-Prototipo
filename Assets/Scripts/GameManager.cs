@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,60 +7,157 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject panelLose;
-    public GameObject panelVictory;
-    public List<Enemy> enemies; //aqui é para pegar todos os inimigos do mapa e mudar a rota deles
-    public TextMeshProUGUI textCoins;
-    public int totalCoins; //aqui eu coloquei o total de moedas para tirar a responsabilidade de guardar do jogador 
+    [SerializeField] private GameObject panelLose;
+    [SerializeField] private GameObject panelVictory;
+    [SerializeField] private GameObject panelTutorial;
+    [SerializeField] private List<Enemy> enemies; //aqui é para pegar todos os inimigos do mapa e mudar a rota deles
+    [SerializeField] private List<GameObject> coins; //isso é para saber quantas moedas exatas tem no jogo para que
+    [SerializeField] private TextMeshProUGUI textCoins;
+    [SerializeField] private int coinsCollected; //aqui eu coloquei o total de moedas para tirar a responsabilidade de guardar do jogador 
+    [SerializeField] private int totalCoins; //para saber o total de moedas que estão na fase
 
-    void Start()
+    private void OnEnable()
     {
-        if(panelLose == null)
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SearchReferences();
+    }
+
+    public void SearchReferences() //esse método é para ele procurar as referências quando reiniciar o jogo
+    {
+        if (panelLose == null)
         {
             panelLose = GameObject.Find("PanelLose");
         }
 
-        if(panelVictory == null)
+        if (panelVictory == null)
         {
             panelVictory = GameObject.Find("PanelVictory");
         }
 
-        if(textCoins == null)
+
+        if (panelTutorial == null)
+        {
+            panelTutorial = GameObject.Find("PanelTutorial");
+        }
+
+        if (textCoins == null)
         {
             textCoins = GameObject.Find("TextCoins").GetComponent<TextMeshProUGUI>();
         }
 
+        enemies.Clear();
         enemies.AddRange(GameObject.FindObjectsOfType<Enemy>());
+        coins.AddRange(GameObject.FindGameObjectsWithTag("coin"));
+        totalCoins = coins.Count;
         panelLose.SetActive(false);
         panelVictory.SetActive(false);
         UpdateTextCoin();
+        textCoins.gameObject.SetActive(false);
+        Time.timeScale = 0f;
+    }    
+
+    public void Play()
+    {
+        panelTutorial.SetActive(false);
+        Time.timeScale = 1f;
+        textCoins.gameObject.SetActive(true);
     }
 
     public void Restart()
     {
+        HidePanels();
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void NextLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        Time.timeScale = 1f;
+
+        Debug.Log("SceneManager.GetActiveScene().buildIndex + 1: " + SceneManager.GetActiveScene().buildIndex + 1);
+        Debug.Log("SceneManager.sceneCount: " + SceneManager.sceneCount );
+
+        if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCount )
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        else
+        {
+            Menu();
+        }
     }
 
     public void Menu()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(0);
+    }
+
+    public void HidePanels()
+    {
+        panelVictory.SetActive(false);
+        panelLose.SetActive(false);
+    }
+
+    public void ShowPanelLose()
+    {
+        CheckMaximumScore();
+        textCoins.gameObject.SetActive(false);
+        panelLose.SetActive(true);
+        panelLose.transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>().text += coinsCollected;
+        coinsCollected = 0;
+        totalCoins = 0;
+        Time.timeScale = 0f;
+    }
+
+    public void CheckMaximumScore()
+    {
+        if(coinsCollected > SaveManager.MainSave.maximunScore)
+        {
+            SaveManager.MainSave.maximunScore = coinsCollected;
+            SaveManager.Save();
+        }
     }
 
     public void UpdateCoin()
     {
-        totalCoins++;
+        coinsCollected++;
         UpdateTextCoin();
         Pursuit();
+        CheckVictory();
+    }
+
+    public void CheckVictory()
+    {
+        Debug.Log("Chegou aqui");
+        Debug.Log("coinsCollected: " + coinsCollected);
+        Debug.Log("totalCoins: " + totalCoins);
+
+        if (coinsCollected >= totalCoins)
+        {
+            ShowPanelVictory();
+        }
+    }
+
+    public void ShowPanelVictory()
+    {
+        CheckMaximumScore();
+        textCoins.gameObject.SetActive(false);
+        panelVictory.SetActive(true);
+        panelVictory.transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>().text += coinsCollected;
+        coinsCollected = 0;
+        totalCoins = 0;
+        Time.timeScale = 0f;
     }
 
     public void Pursuit()
     {
-        if(totalCoins == 70)
+        if(coinsCollected == 70)
         {
             foreach(Enemy enemy in enemies)
             {
@@ -70,6 +168,6 @@ public class GameManager : MonoBehaviour
 
     public void UpdateTextCoin()
     {
-        textCoins.text = "Coins: " + totalCoins;
+        textCoins.text = "Coins: " + coinsCollected;
     }
 }

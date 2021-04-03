@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 4617461487735264306}
   m_Layer: 8
   m_Name: EnemyBlue
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 3
   m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2520463190221920734
@@ -111,11 +111,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 11400000, guid: 6381495aeda222b42949b3976f4db8a2, type: 2}
   checkPoints: []
-  arrayCheckPoints: []
   navMesh: {fileID: 0}
   player: {fileID: 0}
   indexCheckPoints: 
   indexNow: 0
+  isPursuiting: 0
 --- !u!195 &4617461487735264306
 NavMeshAgent:
   m_ObjectHideFlags: 0

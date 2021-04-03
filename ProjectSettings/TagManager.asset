@@ -6,6 +6,7 @@ TagManager:
   tags:
   - checkpoint
   - coin
+  - enemy
   layers:
   - Default
   - TransparentFX
