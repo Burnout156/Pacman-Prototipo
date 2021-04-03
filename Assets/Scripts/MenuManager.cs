@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +8,7 @@ public class MenuManager : MonoBehaviour
 {
     public GameObject panelMainMenu;
     public GameObject panelSelectLevel;
+    public TextMeshProUGUI textScore;
 
     void Start()
     {
@@ -19,6 +21,13 @@ public class MenuManager : MonoBehaviour
         {
             panelSelectLevel = GameObject.Find("PanelSelectLevel");
         }
+
+        if (textScore == null)
+        {
+            textScore = GameObject.Find("TextScore").GetComponent<TextMeshProUGUI>();
+        }
+
+        textScore.text = "Score: " + SaveManager.MainSave.maximunScore;
 
         panelSelectLevel.SetActive(false);
     }

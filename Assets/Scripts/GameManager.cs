@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
         CheckMaximumScore();
         textCoins.gameObject.SetActive(false);
         panelLose.SetActive(true);
-        panelLose.transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>().text += coinsCollected;
+        panelLose.transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>().text = "Total Coins: " + coinsCollected;
         coinsCollected = 0;
         totalCoins = 0;
         Time.timeScale = 0f;
