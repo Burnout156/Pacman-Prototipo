@@ -21,13 +21,20 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded; //isso é para tirar do cache a cena atual e recarregá-la, afim de buscar apenas 1 vez todas as referências
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) //aqui serve para buscar a referência toda a vez que a cena for carregada
     {
         SearchReferences();
     }
 
     public void SearchReferences() //esse método é para ele procurar as referências quando reiniciar o jogo
     {
+        Debug.Log("Executado Referencial");
+
         if (panelLose == null)
         {
             panelLose = GameObject.Find("PanelLose");
@@ -38,7 +45,6 @@ public class GameManager : MonoBehaviour
             panelVictory = GameObject.Find("PanelVictory");
         }
 
-
         if (panelTutorial == null)
         {
             panelTutorial = GameObject.Find("PanelTutorial");
@@ -47,11 +53,15 @@ public class GameManager : MonoBehaviour
         if (textCoins == null)
         {
             textCoins = GameObject.Find("TextCoins").GetComponent<TextMeshProUGUI>();
+        }    
+
+        if (coins.Count == 0)
+        {
+            coins.AddRange(GameObject.FindGameObjectsWithTag("coin"));
         }
 
         enemies.Clear();
         enemies.AddRange(GameObject.FindObjectsOfType<Enemy>());
-        coins.AddRange(GameObject.FindGameObjectsWithTag("coin"));
         totalCoins = coins.Count;
         panelLose.SetActive(false);
         panelVictory.SetActive(false);
@@ -62,9 +72,9 @@ public class GameManager : MonoBehaviour
 
     public void Play()
     {
+        textCoins.gameObject.SetActive(true);
         panelTutorial.SetActive(false);
         Time.timeScale = 1f;
-        textCoins.gameObject.SetActive(true);
     }
 
     public void Restart()
@@ -100,8 +110,9 @@ public class GameManager : MonoBehaviour
 
     public void HidePanels()
     {
+        textCoins.gameObject.SetActive(true);
         panelVictory.SetActive(false);
-        panelLose.SetActive(false);
+        panelLose.SetActive(false);;
     }
 
     public void ShowPanelLose()

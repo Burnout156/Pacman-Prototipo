@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
         if(other.gameObject.tag.Equals("coin"))
         {
             gameManager.UpdateCoin();
-            Destroy(other.gameObject);
+            StartCoroutine(other.gameObject.GetComponent<Coin>().DelayToDestroy());
         }
     }
 
