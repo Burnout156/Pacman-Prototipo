@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
+    public GameObject panelSplashScreen;
     public GameObject panelMainMenu;
     public GameObject panelSelectLevel;
     public TextMeshProUGUI textScore;
@@ -22,14 +23,26 @@ public class MenuManager : MonoBehaviour
             panelSelectLevel = GameObject.Find("PanelSelectLevel");
         }
 
+        if (panelSplashScreen == null)
+        {
+            panelSplashScreen = GameObject.Find("PanelSplashScreen");
+        }
+
         if (textScore == null)
         {
             textScore = GameObject.Find("TextScore").GetComponent<TextMeshProUGUI>();
         }
 
         textScore.text = "Score: " + SaveManager.MainSave.maximunScore;
-
+        panelSplashScreen.SetActive(true);
+        panelMainMenu.SetActive(false);
         panelSelectLevel.SetActive(false);
+    }
+
+    public void SelectMenu()
+    {
+        panelSplashScreen.SetActive(false);
+        panelMainMenu.SetActive(true);
     }
 
     public void SelectLevel()
