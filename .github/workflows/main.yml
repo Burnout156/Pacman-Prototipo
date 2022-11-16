@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         uses: game-ci/unity-test-runner@v2
         with:
-          projectPath: test-projects/test-project
+          projectPath: ProjectSettings
 
       # Build
       - name: Build project
