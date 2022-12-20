@@ -1,19 +1,32 @@
-name: Build Unity
+name: Test
 
-on: push
+on:
+  pull_request: {}
+  push: { branches: [master] }
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  echo:
+  build:
+    name: Test project
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        unity-version: [2020.1.17f1]
     steps:
-    - run: echo -n -e "HELLO\n !\n World!" > text.txt
 
-    - uses: pCYSl5EDgo/setup-unity@master
-      with:
-        unity-version: ${{ matrix.unity-version }}
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+    
+      # Cache
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library
 
-    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile || exit 0
-    - run: cat Unity_v${{ matrix.unity-version }}.alf
+      # Test
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v2
+        with:
+          unityVersion: 2020.1.17f1
