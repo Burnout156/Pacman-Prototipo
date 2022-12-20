@@ -10,5 +10,6 @@ jobs:
         with:
           version: '2020.1.17f1'
           architecture: 'x86_64'
+          repository: Pacman-Prototipo
       - name: Build Unity project
         run: /opt/Unity/Editor/Unity -batchmode -nographics -projectPath $(pwd) -buildLinuxUniversalPlayer "$(pwd)/Build/linux.build" -quit
