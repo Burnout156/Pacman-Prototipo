@@ -1,3 +1,3 @@
 # Pacman-Prototipo
 
-Versão Unity: 2020.1.17f1 (64-bit)
+Versão Unity: 2021.3.9f1 (64-bit)
